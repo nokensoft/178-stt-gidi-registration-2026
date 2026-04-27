@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistem Pendaftaran Online STT GIDI Papua</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" type="image/png" href="img/logo-stt-gidi-small.png">
+    <style>
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-violet-100 via-slate-100 to-indigo-100 text-slate-800" x-data="loginPage()">
+    <main class="mx-auto flex min-h-screen w-full max-w-6xl items-center px-4 py-8 sm:px-6 lg:px-8">
+        <div class="grid w-full gap-6 lg:grid-cols-2">
+            <section class="rounded-2xl border border-white/70 bg-white/80 p-6 shadow-sm backdrop-blur sm:p-8">
+                <div class="mb-6 flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-white ring-1 ring-slate-200">
+                        <img src="img/logo-stt-gidi-small.png" alt="Logo STT GIDI Papua" class="h-9 w-9 object-contain">
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-violet-600">Sistem Pendaftaran Online STT GIDI Papua</p>
+                        <h1 class="text-lg font-extrabold text-slate-900 sm:text-xl">Halaman Login</h1>
+                    </div>
+                </div>
+
+                <p class="text-sm leading-relaxed text-slate-600">
+                    Halaman ini digunakan untuk login admin. Calon mahasiswa/pengunjung tetap dapat langsung mengakses formulir pendaftaran tanpa login.
+                </p>
+
+                <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                    <a href="daftar.html"
+                       class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                        <i class="fa-solid fa-file-signature"></i>
+                        Buka Formulir Daftar
+                    </a>
+                    <div class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Pengunjung bisa daftar tanpa login
+                    </div>
+                </div>
+            </section>
+
+            <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg sm:p-8">
+                <div class="mb-2 flex items-center gap-3">
+                    <img src="img/logo-stt-gidi-small.png" alt="Logo STT GIDI Papua" class="h-12 w-12 rounded-lg object-contain">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-violet-600">Masuk Akun</p>
+                        <h2 class="text-xl font-extrabold text-slate-900">Login Pengguna</h2>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-500">Silakan isi data login untuk melanjutkan.</p>
+
+                <form class="mt-6 space-y-4" @submit.prevent="login()">
+                    <div>
+                        <label class="mb-1.5 block text-sm font-semibold text-slate-700">Nama Pengguna</label>
+                        <input type="text"
+                               x-model="form.username"
+                               placeholder="Contoh: admin kampus"
+                               class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-200">
+                    </div>
+
+                    <div>
+                        <label class="mb-1.5 block text-sm font-semibold text-slate-700">Password</label>
+                        <div class="relative">
+                            <input :type="showPassword ? 'text' : 'password'"
+                                   x-model="form.password"
+                                   placeholder="Masukkan password"
+                                   class="w-full rounded-lg border border-slate-300 px-3 py-2.5 pr-10 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-200">
+                            <button type="button"
+                                    @click="showPassword = !showPassword"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i class="fa-solid" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="mb-1.5 block text-sm font-semibold text-slate-700">Peran</label>
+                        <select x-model="form.role"
+                                class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-200">
+                            <option value="admin">Admin Kampus</option>
+                            <option value="pengunjung">Pengunjung / Calon Mahasiswa</option>
+                        </select>
+                    </div>
+
+                    <p x-show="errorMessage" x-text="errorMessage" class="rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-600"></p>
+
+                    <button type="submit"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-violet-700">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Login
+                    </button>
+                </form>
+
+                <div class="mt-4 border-t border-slate-100 pt-4">
+                    <a href="daftar.html"
+                       class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                        <i class="fa-solid fa-user"></i>
+                        Lanjut Sebagai Pengunjung (Tanpa Login)
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        function loginPage() {
+            return {
+                showPassword: false,
+                errorMessage: '',
+                form: {
+                    username: 'admin kampus',
+                    password: 'admin123',
+                    role: 'admin',
+                },
+                login() {
+                    if (!this.form.username.trim() || !this.form.password.trim()) {
+                        this.errorMessage = 'Nama pengguna dan password wajib diisi.';
+                        return;
+                    }
+                    this.errorMessage = '';
+                    sessionStorage.setItem('spo_stt_user', this.form.username.trim());
+                    sessionStorage.setItem('spo_stt_role', this.form.role);
+                    if (this.form.role === 'admin') {
+                        window.location.href = 'admin.html';
+                        return;
+                    }
+                    window.location.href = 'daftar.html';
+                },
+            };
+        }
+    </script>
+</body>
+</html>
